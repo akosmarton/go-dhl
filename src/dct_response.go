@@ -8,29 +8,29 @@ type DCTResponse struct {
 
 // GetQuoteResponse response object
 type GetQuoteResponse struct {
-	Response   Response           `xml:"Response"`
-	BkgDetails BkgDetailsResponse `xml:"BkgDetails"`
-	Srvs       Srvs               `xml:"Srvs"`
-	Note       NoteType           `xml:"Note"`
+	Response   *Response           `xml:"Response"`
+	BkgDetails *BkgDetailsResponse `xml:"BkgDetails"`
+	Srvs       *Srvs               `xml:"Srvs"`
+	Note       *NoteType           `xml:"Note"`
 }
 
 // GetCapabilityResponse response object
 type GetCapabilityResponse struct {
-	Response   Response           `xml:"Response"`
-	BkgDetails BkgDetailsResponse `xml:"BkgDetails"`
-	Srvs       Srvs               `xml:"Srvs"`
-	Note       NoteType           `xml:"Note"`
+	Response   *Response           `xml:"Response"`
+	BkgDetails *BkgDetailsResponse `xml:"BkgDetails"`
+	Srvs       *Srvs               `xml:"Srvs"`
+	Note       *NoteType           `xml:"Note"`
 }
 
 // Response response object
 type Response struct {
-	ServiceHeader ServiceHeader `xml:"ServiceHeader,omitempty"`
+	ServiceHeader *ServiceHeader `xml:"ServiceHeader,omitempty"`
 }
 
 // BkgDetailsResponse response object
 type BkgDetailsResponse struct {
-	OriginServiceArea      OrgnSvcAreaType  `xml:"OriginServiceArea"`
-	DestinationServiceArea DestSvcAreaType  `xml:"DestinationServiceArea"`
+	OriginServiceArea      *OrgnSvcAreaType `xml:"OriginServiceArea"`
+	DestinationServiceArea *DestSvcAreaType `xml:"DestinationServiceArea"`
 	QtdShp                 []QtdShpResponse `xml:"QtdShp"`
 	CalcNextDayInd         string           `xml:"CalcNextDayInd"`
 }
@@ -49,70 +49,70 @@ type DestSvcAreaType struct {
 
 // QtdShpResponse response object
 type QtdShpResponse struct {
-	GlobalProductCode         string                 `xml:"GlobalProductCode,omitempty"`
-	LocalProductCode          string                 `xml:"LocalProductCode,omitempty"`
-	ProductShortName          string                 `xml:"ProductShortName,omitempty"`
-	LocalProductName          string                 `xml:"LocalProductName,omitempty"`
-	NetworkTypeCode           string                 `xml:"NetworkTypeCode,omitempty"`
-	POfferedCustAgreement     string                 `xml:"POfferedCustAgreement,omitempty"`
-	TransInd                  string                 `xml:"TransInd,omitempty"`
-	PickupDate                string                 `xml:"PickupDate,omitempty"`
-	PickupCutoffTime          string                 `xml:"PickupCutoffTime,omitempty"`
-	BookingTime               string                 `xml:"BookingTime,omitempty"`
-	CurrencyCode              string                 `xml:"CurrencyCode,omitempty"`
-	ExchangeRate              float32                `xml:"ExchangeRate"`
-	WeightCharge              float32                `xml:"WeightCharge"`
-	WeightChargeTax           float32                `xml:"WeightChargeTax"`
-	WeightChargeTaxRate       float32                `xml:"weightChargeTaxRate"`
-	TotalTransitDays          int                    `xml:"TotalTransitDays"`
-	PickupPostalLocAddDays    int                    `xml:"PickupPostalLocAddDays"`
-	DeliveryPostalLocAddDays  int                    `xml:"DeliveryPostalLocAddDays"`
-	PickupNonDHLCourierCode   string                 `xml:"PickupNonDHLCourierCode,omitempty"`
-	DeliveryNonDHLCourierCode string                 `xml:"DeliveryNonDHLCourierCode,omitempty"`
-	DeliveryCheckpointReturn  string                 `xml:"DeliveryCheckpointReturn,omitempty"`
-	DeliveryDate              string                 `xml:"DeliveryDate,omitempty"`
-	DeliveryTime              string                 `xml:"DeliveryTime,omitempty"`
-	DeliveryTimeGMTOffset     string                 `xml:"DeliveryTimeGMTOffset,omitempty"`
-	DimensionalWeight         float32                `xml:"DimensionalWeight"`
-	WeightUnit                string                 `xml:"WeightUnit,omitempty"`
-	PickupDayOfWeekNum        string                 `xml:"PickupDayOfWeekNum,omitempty"`
-	DestinationDayOfWeekNum   string                 `xml:"DestinationDayOfWeekNum,omitempty"`
-	QtdShpExChrg              QtdShpExChrgResponse   `xml:"QtdShpExChrg"`
-	PricingDate               string                 `xml:"PricingDate,omitempty"`
-	ShippingCharge            float32                `xml:"ShippingCharge"`
-	TotalTaxAmount            float32                `xml:"TotalTaxAmount"`
-	QtdSInAdCur               QtdSInAdCurType        `xml:"QtdSInAdCur"`
-	WeightChargeTaxDet        WeightChargeTaxDetType `xml:"WeightChargeTaxDet"`
+	GlobalProductCode         string                  `xml:"GlobalProductCode,omitempty"`
+	LocalProductCode          string                  `xml:"LocalProductCode,omitempty"`
+	ProductShortName          string                  `xml:"ProductShortName,omitempty"`
+	LocalProductName          string                  `xml:"LocalProductName,omitempty"`
+	NetworkTypeCode           string                  `xml:"NetworkTypeCode,omitempty"`
+	POfferedCustAgreement     string                  `xml:"POfferedCustAgreement,omitempty"`
+	TransInd                  string                  `xml:"TransInd,omitempty"`
+	PickupDate                string                  `xml:"PickupDate,omitempty"`
+	PickupCutoffTime          string                  `xml:"PickupCutoffTime,omitempty"`
+	BookingTime               string                  `xml:"BookingTime,omitempty"`
+	CurrencyCode              string                  `xml:"CurrencyCode,omitempty"`
+	ExchangeRate              float32                 `xml:"ExchangeRate"`
+	WeightCharge              float32                 `xml:"WeightCharge"`
+	WeightChargeTax           float32                 `xml:"WeightChargeTax"`
+	WeightChargeTaxRate       float32                 `xml:"weightChargeTaxRate"`
+	TotalTransitDays          int                     `xml:"TotalTransitDays"`
+	PickupPostalLocAddDays    int                     `xml:"PickupPostalLocAddDays"`
+	DeliveryPostalLocAddDays  int                     `xml:"DeliveryPostalLocAddDays"`
+	PickupNonDHLCourierCode   string                  `xml:"PickupNonDHLCourierCode,omitempty"`
+	DeliveryNonDHLCourierCode string                  `xml:"DeliveryNonDHLCourierCode,omitempty"`
+	DeliveryCheckpointReturn  string                  `xml:"DeliveryCheckpointReturn,omitempty"`
+	DeliveryDate              string                  `xml:"DeliveryDate,omitempty"`
+	DeliveryTime              string                  `xml:"DeliveryTime,omitempty"`
+	DeliveryTimeGMTOffset     string                  `xml:"DeliveryTimeGMTOffset,omitempty"`
+	DimensionalWeight         float32                 `xml:"DimensionalWeight"`
+	WeightUnit                string                  `xml:"WeightUnit,omitempty"`
+	PickupDayOfWeekNum        string                  `xml:"PickupDayOfWeekNum,omitempty"`
+	DestinationDayOfWeekNum   string                  `xml:"DestinationDayOfWeekNum,omitempty"`
+	QtdShpExChrg              *QtdShpExChrgResponse   `xml:"QtdShpExChrg"`
+	PricingDate               string                  `xml:"PricingDate,omitempty"`
+	ShippingCharge            float32                 `xml:"ShippingCharge"`
+	TotalTaxAmount            float32                 `xml:"TotalTaxAmount"`
+	QtdSInAdCur               *QtdSInAdCurType        `xml:"QtdSInAdCur"`
+	WeightChargeTaxDet        *WeightChargeTaxDetType `xml:"WeightChargeTaxDet"`
 }
 
 // QtdShpExChrgResponse response object
 type QtdShpExChrgResponse struct {
-	SpecialServiceType      string                  `xml:"SpecialServiceType,omitempty"`
-	LocalSpecialServiceType string                  `xml:"LocalSpecialServiceType,omitempty"`
-	GlobalServiceName       string                  `xml:"GlobalServiceName,omitempty"`
-	LocalServiceTypeName    string                  `xml:"LocalServiceTypeName,omitempty"`
-	SOfferedCustAgreement   string                  `xml:"SOfferedCustAgreement,omitempty"`
-	ChargeCodeType          string                  `xml:"ChargeCodeType,omitempty"`
-	InsPrmRateInPercentage  float32                 `xml:"InsPrmRateInPercentage"`
-	CurrencyCode            string                  `xml:"CurrencyCode,omitempty"`
-	ChargeValue             float32                 `xml:"ChargeValue"`
-	ChargeTaxAmount         float32                 `xml:"ChargeTaxAmount"`
-	ChargeTaxRate           float32                 `xml:"ChargeTaxRate"`
-	ChargeTaxAmountDet      ChargeTaxAmountDetType  `xml:"ChargeTaxAmountDet"`
-	QtdSExtrChrgInAdCur     QtdSExtrChrgInAdCurType `xml:"QtdSExtrChrgInAdCur"`
+	SpecialServiceType      string                   `xml:"SpecialServiceType,omitempty"`
+	LocalSpecialServiceType string                   `xml:"LocalSpecialServiceType,omitempty"`
+	GlobalServiceName       string                   `xml:"GlobalServiceName,omitempty"`
+	LocalServiceTypeName    string                   `xml:"LocalServiceTypeName,omitempty"`
+	SOfferedCustAgreement   string                   `xml:"SOfferedCustAgreement,omitempty"`
+	ChargeCodeType          string                   `xml:"ChargeCodeType,omitempty"`
+	InsPrmRateInPercentage  float32                  `xml:"InsPrmRateInPercentage"`
+	CurrencyCode            string                   `xml:"CurrencyCode,omitempty"`
+	ChargeValue             float32                  `xml:"ChargeValue"`
+	ChargeTaxAmount         float32                  `xml:"ChargeTaxAmount"`
+	ChargeTaxRate           float32                  `xml:"ChargeTaxRate"`
+	ChargeTaxAmountDet      *ChargeTaxAmountDetType  `xml:"ChargeTaxAmountDet"`
+	QtdSExtrChrgInAdCur     *QtdSExtrChrgInAdCurType `xml:"QtdSExtrChrgInAdCur"`
 }
 
 // QtdSInAdCurType response object
 type QtdSInAdCurType struct {
-	CustomsValue         float32                `xml:"CustomsValue"`
-	ExchangeRate         float32                `xml:"ExchangeRate"`
-	CurrencyCode         string                 `xml:"CurrencyCode,omitempty"`
-	CurrencyRoleTypeCode string                 `xml:"CurrencyRoleTypeCode,omitempty"`
-	WeightCharge         float32                `xml:"WeightCharge"`
-	TotalAmount          float32                `xml:"TotalAmount"`
-	TotalTaxAmount       float32                `xml:"TotalTaxAmount"`
-	WeightChargeTax      float32                `xml:"WeightChargeTax"`
-	WeightChargeTaxDet   WeightChargeTaxDetType `xml:"WeightChargeTaxDet"`
+	CustomsValue         float32                 `xml:"CustomsValue"`
+	ExchangeRate         float32                 `xml:"ExchangeRate"`
+	CurrencyCode         string                  `xml:"CurrencyCode,omitempty"`
+	CurrencyRoleTypeCode string                  `xml:"CurrencyRoleTypeCode,omitempty"`
+	WeightCharge         float32                 `xml:"WeightCharge"`
+	TotalAmount          float32                 `xml:"TotalAmount"`
+	TotalTaxAmount       float32                 `xml:"TotalTaxAmount"`
+	WeightChargeTax      float32                 `xml:"WeightChargeTax"`
+	WeightChargeTaxDet   *WeightChargeTaxDetType `xml:"WeightChargeTaxDet"`
 }
 
 // WeightChargeTaxDetType response object
@@ -133,12 +133,12 @@ type ChargeTaxAmountDetType struct {
 
 // QtdSExtrChrgInAdCurType response object
 type QtdSExtrChrgInAdCurType struct {
-	ChargeValue          float32                `xml:"ChargeValue"`
-	ChargeExchangeRate   float32                `xml:"ChargeExchangeRate"`
-	ChargeTaxAmount      float32                `xml:"ChargeTaxAmount"`
-	CurrencyCode         string                 `xml:"CurrencyCode,omitempty"`
-	CurrencyRoleTypeCode string                 `xml:"CurrencyRoleTypeCode,omitempty"`
-	ChargeTaxAmountDet   ChargeTaxAmountDetType `xml:"ChargeTaxAmountDet"`
+	ChargeValue          float32                 `xml:"ChargeValue"`
+	ChargeExchangeRate   float32                 `xml:"ChargeExchangeRate"`
+	ChargeTaxAmount      float32                 `xml:"ChargeTaxAmount"`
+	CurrencyCode         string                  `xml:"CurrencyCode,omitempty"`
+	CurrencyRoleTypeCode string                  `xml:"CurrencyRoleTypeCode,omitempty"`
+	ChargeTaxAmountDet   *ChargeTaxAmountDetType `xml:"ChargeTaxAmountDet"`
 }
 
 // Srvs response object
@@ -150,7 +150,7 @@ type Srvs struct {
 type SrvType struct {
 	GlobalProductCode string       `xml:"GlobalProductCode,omitempty"`
 	MrkSrv            []MrkSrvType `xml:"MrkSrv"`
-	SBTP              SBTPType     `xml:"SBTP"`
+	SBTP              *SBTPType    `xml:"SBTP"`
 }
 
 // MrkSrvType response object
@@ -179,7 +179,7 @@ type MrkSrvType struct {
 
 // SBTPType response object
 type SBTPType struct {
-	Prod ProdType `xml:"Prod"`
+	Prod *ProdType `xml:"Prod"`
 }
 
 // ProdType response object
@@ -202,7 +202,7 @@ type CombRSrv struct {
 
 // NoteType response object
 type NoteType struct {
-	Condition Condition `xml:"Condition"`
+	Condition *Condition `xml:"Condition"`
 }
 
 // Condition response object

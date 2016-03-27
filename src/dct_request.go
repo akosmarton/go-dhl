@@ -20,25 +20,25 @@ type DCTRequest struct {
 
 // GetQuote request object
 type GetQuote struct {
-	Request    Request           `xml:"Request,omitempty"`
-	From       DCTFrom           `xml:"From,omitempty"`
-	BkgDetails BkgDetailsRequest `xml:"BkgDetails,omitempty"`
-	To         DCTTo             `xml:"To,omitempty"`
-	Dutiable   *DCTDutiable      `xml:"Dutiable,omitempty"`
+	Request    *Request           `xml:"Request,omitempty"`
+	From       *DCTFrom           `xml:"From,omitempty"`
+	BkgDetails *BkgDetailsRequest `xml:"BkgDetails,omitempty"`
+	To         *DCTTo             `xml:"To,omitempty"`
+	Dutiable   *DCTDutiable       `xml:"Dutiable,omitempty"`
 }
 
 // GetCapability request object
 type GetCapability struct {
-	Request    Request           `xml:"Request,omitempty"`
-	From       DCTFrom           `xml:"From,omitempty"`
-	BkgDetails BkgDetailsRequest `xml:"BkgDetails,omitempty"`
-	To         DCTTo             `xml:"To,omitempty"`
-	Dutiable   DCTDutiable       `xml:"Dutiable,omitempty"`
+	Request    *Request           `xml:"Request,omitempty"`
+	From       *DCTFrom           `xml:"From,omitempty"`
+	BkgDetails *BkgDetailsRequest `xml:"BkgDetails,omitempty"`
+	To         *DCTTo             `xml:"To,omitempty"`
+	Dutiable   *DCTDutiable       `xml:"Dutiable,omitempty"`
 }
 
 // Request request object
 type Request struct {
-	ServiceHeader ServiceHeader `xml:"ServiceHeader,omitempty"`
+	ServiceHeader *ServiceHeader `xml:"ServiceHeader,omitempty"`
 }
 
 // DCTFrom request object
@@ -103,9 +103,9 @@ type PieceType struct {
 
 // QtdShpRequest request object
 type QtdShpRequest struct {
-	GlobalProductCode string              `xml:"GlobalProductCode,omitempty"`
-	LocalProductCode  string              `xml:"LocalProductCode,omitempty"`
-	QtdShpExChrg      QtdShpExChrgRequest `xml:"QtdShpExChrg,omitempty"`
+	GlobalProductCode string               `xml:"GlobalProductCode,omitempty"`
+	LocalProductCode  string               `xml:"LocalProductCode,omitempty"`
+	QtdShpExChrg      *QtdShpExChrgRequest `xml:"QtdShpExChrg,omitempty"`
 }
 
 // QtdShpExChrgRequest request object

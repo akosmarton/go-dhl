@@ -16,13 +16,19 @@ var hosts = map[string]string{
 
 // Client interface
 type Client interface {
-	GetQuote(DCTFrom, DCTTo, BkgDetailsRequest, *DCTDutiable) (*DCTResponse, error)
+	GetQuote(*DCTFrom, *DCTTo, *BkgDetailsRequest, *DCTDutiable) (*DCTResponse, error)
 	Tracking()
 	Routing()
 }
 
+// DHLClientConfig object used to configure DHLClient
+type DHLClientConfig struct {
+	Debug bool
+	Host  string
+}
+
 // NewDHLClient returns a DHLClient against DHL Production Environment
-func NewDHLClient(siteID string, password string) (Client, error) {
+func NewDHLClient(siteID string, password string, config DHLClientConfig) (Client, error) {
 	if siteID == "" {
 		return nil, errors.New("siteID missing")
 	}
@@ -30,40 +36,30 @@ func NewDHLClient(siteID string, password string) (Client, error) {
 		return nil, errors.New("password missing")
 	}
 
-	client := newDHLClient(siteID, password, "production")
-	return client, nil
-}
-
-// NewDHLStagingClient returns a DHLClient against DHL Staging Environment
-func NewDHLStagingClient(siteID string, password string) (Client, error) {
-	if siteID == "" {
-		return nil, errors.New("siteID missing")
-	}
-	if password == "" {
-		return nil, errors.New("password missing")
+	host := "production"
+	if config.Host != "" {
+		host = config.Host
 	}
 
-	client := newDHLClient(siteID, password, "staging")
-	return client, nil
-}
-
-func newDHLClient(siteID string, password string, host string) Client {
 	return &dhlClient{
 		baseURL:    hosts[host],
 		httpClient: &http.Client{},
+		debug:      config.Debug,
 		siteID:     siteID,
 		password:   password,
-	}
+	}, nil
+
 }
 
 type dhlClient struct {
 	baseURL    string
 	httpClient *http.Client
+	debug      bool
 	siteID     string
 	password   string
 }
 
-func (c *dhlClient) GetQuote(from DCTFrom, to DCTTo, details BkgDetailsRequest, dutiable *DCTDutiable) (*DCTResponse, error) {
+func (c *dhlClient) GetQuote(from *DCTFrom, to *DCTTo, details *BkgDetailsRequest, dutiable *DCTDutiable) (*DCTResponse, error) {
 	data := c.buildQuoteRequest(from, to, details, dutiable)
 
 	xmlstring, err := xml.MarshalIndent(data, "", "    ")
@@ -74,7 +70,9 @@ func (c *dhlClient) GetQuote(from DCTFrom, to DCTTo, details BkgDetailsRequest, 
 	url := fmt.Sprintf("http://%s/%s", c.baseURL, "XMLShippingServlet")
 	body := bytes.NewBuffer([]byte(xmlstring))
 
-	fmt.Println(body)
+	if c.debug {
+		fmt.Printf("GetQuote Request Body: %s\n", body)
+	}
 
 	resp, err := c.httpClient.Post(url, "text/xml", body)
 	if err != nil {
@@ -87,7 +85,9 @@ func (c *dhlClient) GetQuote(from DCTFrom, to DCTTo, details BkgDetailsRequest, 
 		return nil, err
 	}
 
-	fmt.Printf("%s\n", string(contents))
+	if c.debug {
+		fmt.Printf("GetQuote Response Body: %s\n", string(contents))
+	}
 
 	var dctResponse DCTResponse
 	if err := xml.Unmarshal(contents, &dctResponse); err != nil {
@@ -97,10 +97,11 @@ func (c *dhlClient) GetQuote(from DCTFrom, to DCTTo, details BkgDetailsRequest, 
 	return &dctResponse, nil
 }
 
-func (c *dhlClient) buildQuoteRequest(from DCTFrom, to DCTTo, details BkgDetailsRequest, dutiable *DCTDutiable) *DCTRequest {
+func (c *dhlClient) buildQuoteRequest(from *DCTFrom, to *DCTTo, details *BkgDetailsRequest, dutiable *DCTDutiable) *DCTRequest {
+	sh := NewServiceHeader(c.siteID, c.password)
 	q := GetQuote{
-		Request: Request{
-			ServiceHeader: NewServiceHeader(c.siteID, c.password),
+		Request: &Request{
+			ServiceHeader: &sh,
 		},
 		From:       from,
 		To:         to,
