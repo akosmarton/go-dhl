@@ -41,7 +41,7 @@ func (suite *GetQuoteTestSuite) SetupTest() {
 }
 
 func (suite *GetQuoteTestSuite) TestValidQuoteAPPriceBreakdownRASRequest() {
-	config := DHLClientConfig{Host: "staging"}
+	config := ClientConfig{Host: "staging"}
 	client, _ := NewDHLClient("DServiceVal", "testServVal", config)
 
 	from := &DCTFrom{}
@@ -82,7 +82,7 @@ func (suite *GetQuoteTestSuite) TestValidQuoteAPPriceBreakdownRASRequest() {
 }
 
 func (suite *GetQuoteTestSuite) TestValidQuoteEUPriceBreakdownRASRequest() {
-	config := DHLClientConfig{Host: "staging"}
+	config := ClientConfig{Host: "staging"}
 	client, _ := NewDHLClient("DServiceVal", "testServVal", config)
 
 	from := &DCTFrom{}
@@ -130,7 +130,7 @@ func (suite *GetQuoteTestSuite) TestValidQuoteEUPriceBreakdownRASRequest() {
 }
 
 func (suite *GetQuoteTestSuite) TestValidQuoteNonEUNonEUWithAcctProdServiceRequest() {
-	config := DHLClientConfig{Host: "staging"}
+	config := ClientConfig{Host: "staging"}
 	client, _ := NewDHLClient("DServiceVal", "testServVal", config)
 
 	from := &DCTFrom{}
@@ -177,7 +177,7 @@ func (suite *GetQuoteTestSuite) TestValidQuoteNonEUNonEUWithAcctProdServiceReque
 }
 
 func (suite *GetQuoteTestSuite) TestValidQuoteEUToNonEUWithAcctProdInsuranceRequest() {
-	config := DHLClientConfig{Host: "staging"}
+	config := ClientConfig{Host: "staging"}
 	client, _ := NewDHLClient("DServiceVal", "testServVal", config)
 
 	from := &DCTFrom{}
