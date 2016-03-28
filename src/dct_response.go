@@ -25,6 +25,7 @@ type GetCapabilityResponse struct {
 // Response response object
 type Response struct {
 	ServiceHeader *ServiceHeader `xml:"ServiceHeader,omitempty"`
+	Status        *Status        `xml:"Status,omitempty"`
 }
 
 // BkgDetailsResponse response object

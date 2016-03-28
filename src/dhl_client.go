@@ -19,7 +19,7 @@ type Client interface {
 	GetQuote(*DCTFrom, *DCTTo, *BkgDetailsRequest, *DCTDutiable) (*DCTResponse, error)
 	GetCapability(*DCTFrom, *DCTTo, *BkgDetailsRequest, *DCTDutiable) (*DCTResponse, error)
 	Tracking(TrackingQuery) (*TrackingResponse, error)
-	Routing()
+	Routing(RouteQuery) (*RouteResponse, error)
 }
 
 // ClientConfig object used to configure DHLClient
@@ -39,6 +39,21 @@ type TrackingQuery struct {
 	AccountNumber    int
 	ShipmentDate     *ShipmentDate
 	ShipperReference *Reference
+}
+
+// RouteQuery contains parameters to be used for making a Routing request
+type RouteQuery struct {
+	RegionCode        string // AM EU AP
+	RequestType       string // O D
+	Address1          string
+	Address2          string
+	Address3          string
+	PostalCode        string
+	City              string
+	CountryCode       string
+	OriginCountryCode string
+	CountryName       string
+	Division          string
 }
 
 // NewDHLClient returns a DHLClient against DHL Production Environment
@@ -163,7 +178,7 @@ func (c *dhlClient) buildCapabilityRequest(from *DCTFrom, to *DCTTo, details *Bk
 func (c *dhlClient) Tracking(query TrackingQuery) (*TrackingResponse, error) {
 	var data interface{}
 
-	if len(query.LPNumbers) != 0 {
+	if len(query.LPNumbers) != 0 || len(query.AWBNumbers) != 0 {
 		if c.debug {
 			fmt.Println("Build KnownTrackingRequest")
 		}
@@ -228,6 +243,49 @@ func (c *dhlClient) buildUnknownTrackingRequest(query TrackingQuery) *UnknownTra
 	}
 }
 
+func (c *dhlClient) Routing(query RouteQuery) (*RouteResponse, error) {
+	data := c.buildRoutingRequest(query)
+	contents, err := c.fetch(data)
+	if err != nil {
+		return nil, err
+	}
+
+	if c.debug {
+		fmt.Printf("Routing Response Body: %s\n", string(*contents))
+	}
+
+	var routeResponse RouteResponse
+	if err := xml.Unmarshal(*contents, &routeResponse); err != nil {
+		return nil, err
+	}
+
+	return &routeResponse, nil
+}
+
+func (c *dhlClient) buildRoutingRequest(query RouteQuery) *RouteRequest {
+	sh := NewServiceHeader(c.siteID, c.password)
+	return &RouteRequest{
+		XNS1NameSpace:   "http://www.dhl.com",
+		XXSINameSpace:   "http://www.w3.org/2001/XMLSchema-instance",
+		XSchemaLocation: "http://www.dhl.com routing-req.xsd",
+		SchemaVersion:   1.0,
+		Request: &Request{
+			ServiceHeader: &sh,
+		},
+		RegionCode:        query.RegionCode,
+		RequestType:       query.RequestType,
+		Address1:          query.Address1,
+		Address2:          query.Address2,
+		Address3:          query.Address3,
+		PostalCode:        query.PostalCode,
+		City:              query.City,
+		CountryCode:       query.CountryCode,
+		OriginCountryCode: query.OriginCountryCode,
+		CountryName:       query.CountryName,
+		Division:          query.Division,
+	}
+}
+
 func (c *dhlClient) fetch(data interface{}) (*[]byte, error) {
 	xmlstring, err := xml.MarshalIndent(data, "", "    ")
 	if err != nil {
@@ -250,5 +308,3 @@ func (c *dhlClient) fetch(data interface{}) (*[]byte, error) {
 	contents, err := ioutil.ReadAll(resp.Body)
 	return &contents, err
 }
-
-func (c *dhlClient) Routing() {}
