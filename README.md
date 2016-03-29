@@ -66,9 +66,9 @@ Contributions are very welcome. Please follow these guidelines:
 
 ## Contributors
 
-Christoffer Åhrling - @nilpath
-Ilia Mikhailov - @iljoo
-Erik Johansson - @grillbiff
+- Christoffer Åhrling - @nilpath
+- Ilia Mikhailov - @iljoo
+- Erik Johansson - @grillbiff
 
 ## License
 
