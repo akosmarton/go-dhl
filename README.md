@@ -2,7 +2,7 @@
 
 ## Install
 
-`go get -u github.com/shipwallet/dhl`
+`go get -u github.com/shipwallet/go-dhl`
 
 ## Usage
 
@@ -55,6 +55,20 @@ func main() {
     fmt.Printf("%+v\n", res)
 }
 ```
+
+## Pull requests / Contributions
+
+Contributions are very welcome. Please follow these guidelines:
+
+- Fork the master branch and issue pull requests targeting the master branch
+- If you are adding an enhancement, please open an issue first with your proposed change.
+
+
+## Contributors
+
+Christoffer Åhrling - @nilpath
+Ilia Mikhailov - @iljoo
+Erik Johansson - @grillbiff
 
 ## License
 
