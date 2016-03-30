@@ -82,7 +82,7 @@ func (suite *GetQuoteTestSuite) TestValidQuoteAPPriceBreakdownRASRequest() {
 }
 
 func (suite *GetQuoteTestSuite) TestValidQuoteEUPriceBreakdownRASRequest() {
-	config := ClientConfig{Host: "staging"}
+	config := ClientConfig{Host: "staging", Debug: true}
 	client, _ := NewDHLClient("DServiceVal", "testServVal", config)
 
 	from := &DCTFrom{}

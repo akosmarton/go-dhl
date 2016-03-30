@@ -2,7 +2,7 @@
 
 ## Install
 
-`go get -u github.com/shipwallet/go-dhl`
+`go get -u github.com/shipwallet/go-dhl/...`
 
 ## Usage
 
