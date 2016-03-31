@@ -1,4 +1,4 @@
-package dhl
+package models
 
 // DCTResponse response object
 type DCTResponse struct {

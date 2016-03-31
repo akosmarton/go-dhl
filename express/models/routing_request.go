@@ -1,4 +1,4 @@
-package dhl
+package models
 
 // RouteRequest object
 type RouteRequest struct {

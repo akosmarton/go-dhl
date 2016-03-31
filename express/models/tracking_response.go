@@ -1,4 +1,4 @@
-package dhl
+package models
 
 // TrackingResponse object
 type TrackingResponse struct {

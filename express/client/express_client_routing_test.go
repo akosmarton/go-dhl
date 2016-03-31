@@ -1,8 +1,9 @@
-package dhl
+package client_test
 
 import (
 	"testing"
 
+	"github.com/shipwallet/go-dhl/express/client"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
@@ -16,10 +17,10 @@ func (suite *RoutingTestSuite) SetupTest() {
 }
 
 func (suite *RoutingTestSuite) TestRoutingRequestGlobalAM() {
-	config := ClientConfig{Host: "staging"}
-	client, _ := NewDHLClient("DServiceVal", "testServVal", config)
+	config := client.ClientConfig{Host: "staging"}
+	c, _ := client.NewDHLExpressClient("DServiceVal", "testServVal", config)
 
-	query := RouteQuery{
+	query := client.RouteQuery{
 		RegionCode:        "AM",
 		RequestType:       "O",
 		Address1:          "Suit 333",
@@ -32,7 +33,7 @@ func (suite *RoutingTestSuite) TestRoutingRequestGlobalAM() {
 		OriginCountryCode: "US",
 	}
 
-	resp, err := client.Routing(query)
+	resp, err := c.Routing(query)
 
 	assert.Nil(suite.T(), err)
 	assert.NotNil(suite.T(), resp.Response)
@@ -41,10 +42,10 @@ func (suite *RoutingTestSuite) TestRoutingRequestGlobalAM() {
 }
 
 func (suite *RoutingTestSuite) TestRoutingRequestGlobalAP() {
-	config := ClientConfig{Host: "staging"}
-	client, _ := NewDHLClient("DServiceVal", "testServVal", config)
+	config := client.ClientConfig{Host: "staging"}
+	c, _ := client.NewDHLExpressClient("DServiceVal", "testServVal", config)
 
-	query := RouteQuery{
+	query := client.RouteQuery{
 		RegionCode:        "AP",
 		RequestType:       "D",
 		Address1:          "13, Jalan SS23/15",
@@ -58,7 +59,7 @@ func (suite *RoutingTestSuite) TestRoutingRequestGlobalAP() {
 		OriginCountryCode: "MY",
 	}
 
-	resp, err := client.Routing(query)
+	resp, err := c.Routing(query)
 
 	assert.Nil(suite.T(), err)
 	assert.NotNil(suite.T(), resp.Response)
@@ -67,10 +68,10 @@ func (suite *RoutingTestSuite) TestRoutingRequestGlobalAP() {
 }
 
 func (suite *RoutingTestSuite) TestRoutingRequestGlobalEU() {
-	config := ClientConfig{Host: "staging"}
-	client, _ := NewDHLClient("DServiceVal", "testServVal", config)
+	config := client.ClientConfig{Host: "staging"}
+	c, _ := client.NewDHLExpressClient("DServiceVal", "testServVal", config)
 
-	query := RouteQuery{
+	query := client.RouteQuery{
 		RegionCode:        "EU",
 		RequestType:       "O",
 		Address1:          "Oracle Parkway,",
@@ -84,7 +85,7 @@ func (suite *RoutingTestSuite) TestRoutingRequestGlobalEU() {
 		OriginCountryCode: "GB",
 	}
 
-	resp, err := client.Routing(query)
+	resp, err := c.Routing(query)
 
 	assert.Nil(suite.T(), err)
 	assert.NotNil(suite.T(), resp.Response)
@@ -93,10 +94,10 @@ func (suite *RoutingTestSuite) TestRoutingRequestGlobalEU() {
 }
 
 func (suite *RoutingTestSuite) TestInvalidRoutingRequest() {
-	config := ClientConfig{Host: "staging"}
-	client, _ := NewDHLClient("DServiceVal", "testServVal", config)
+	config := client.ClientConfig{Host: "staging"}
+	c, _ := client.NewDHLExpressClient("DServiceVal", "testServVal", config)
 
-	query := RouteQuery{
+	query := client.RouteQuery{
 		RegionCode:        "AP",
 		RequestType:       "F",
 		Address1:          "13, Jalan SS23/15",
@@ -110,7 +111,7 @@ func (suite *RoutingTestSuite) TestInvalidRoutingRequest() {
 		OriginCountryCode: "MY",
 	}
 
-	resp, err := client.Routing(query)
+	resp, err := c.Routing(query)
 
 	assert.Nil(suite.T(), err)
 	assert.NotNil(suite.T(), resp.Response)

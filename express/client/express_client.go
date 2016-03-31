@@ -1,4 +1,4 @@
-package dhl
+package client
 
 import (
 	"bytes"
@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/shipwallet/go-dhl/express/models"
 )
 
 var hosts = map[string]string{
@@ -16,13 +18,13 @@ var hosts = map[string]string{
 
 // Client interface
 type Client interface {
-	GetQuote(*DCTFrom, *DCTTo, *BkgDetailsRequest, *DCTDutiable) (*DCTResponse, error)
-	GetCapability(*DCTFrom, *DCTTo, *BkgDetailsRequest, *DCTDutiable) (*DCTResponse, error)
-	Tracking(TrackingQuery) (*TrackingResponse, error)
-	Routing(RouteQuery) (*RouteResponse, error)
+	GetQuote(*models.DCTFrom, *models.DCTTo, *models.BkgDetailsRequest, *models.DCTDutiable) (*models.DCTResponse, error)
+	GetCapability(*models.DCTFrom, *models.DCTTo, *models.BkgDetailsRequest, *models.DCTDutiable) (*models.DCTResponse, error)
+	Tracking(TrackingQuery) (*models.TrackingResponse, error)
+	Routing(RouteQuery) (*models.RouteResponse, error)
 }
 
-// ClientConfig object used to configure DHLClient
+// ClientConfig object used to configure dhlExpressClient
 type ClientConfig struct {
 	Debug bool
 	Host  string
@@ -31,14 +33,14 @@ type ClientConfig struct {
 // TrackingQuery contains parameters to be used for making a Known or Unknown Tracking request
 type TrackingQuery struct {
 	LanguageCode     string
-	AWBNumbers       []AWBNumber
-	LPNumbers        []TrackingPieceID
+	AWBNumbers       []models.AWBNumber
+	LPNumbers        []models.TrackingPieceID
 	LevelOfDetails   string // LAST_CHECK_POINT_ONLY or ALL_CHECK_POINTS
 	PiecesEnabled    string // S, B or P
 	CountryCode      string // 2 character country id
 	AccountNumber    int
-	ShipmentDate     *ShipmentDate
-	ShipperReference *Reference
+	ShipmentDate     *models.ShipmentDate
+	ShipperReference *models.Reference
 }
 
 // RouteQuery contains parameters to be used for making a Routing request
@@ -56,8 +58,8 @@ type RouteQuery struct {
 	Division          string
 }
 
-// NewDHLClient returns a DHLClient against DHL Production Environment
-func NewDHLClient(siteID string, password string, config ClientConfig) (Client, error) {
+// NewDHLExpressClient returns a DHLExpressClient against DHL Production Environment
+func NewDHLExpressClient(siteID string, password string, config ClientConfig) (Client, error) {
 	if siteID == "" {
 		return nil, errors.New("siteID missing")
 	}
@@ -70,7 +72,7 @@ func NewDHLClient(siteID string, password string, config ClientConfig) (Client, 
 		host = config.Host
 	}
 
-	return &dhlClient{
+	return &dhlExpressClient{
 		baseURL:    hosts[host],
 		httpClient: &http.Client{},
 		debug:      config.Debug,
@@ -79,7 +81,7 @@ func NewDHLClient(siteID string, password string, config ClientConfig) (Client, 
 	}, nil
 }
 
-type dhlClient struct {
+type dhlExpressClient struct {
 	baseURL    string
 	httpClient *http.Client
 	debug      bool
@@ -89,7 +91,7 @@ type dhlClient struct {
 
 // GetQuote takes DCTFrom, DCTTo, BkgDetailsRequest and DCTDutiable and makes DCTRequest with GetQuote.
 // Returns a DCTResponse with GetQuoteResponse
-func (c *dhlClient) GetQuote(from *DCTFrom, to *DCTTo, details *BkgDetailsRequest, dutiable *DCTDutiable) (*DCTResponse, error) {
+func (c *dhlExpressClient) GetQuote(from *models.DCTFrom, to *models.DCTTo, details *models.BkgDetailsRequest, dutiable *models.DCTDutiable) (*models.DCTResponse, error) {
 	data := c.buildQuoteRequest(from, to, details, dutiable)
 	contents, err := c.fetch(data)
 	if err != nil {
@@ -100,7 +102,7 @@ func (c *dhlClient) GetQuote(from *DCTFrom, to *DCTTo, details *BkgDetailsReques
 		fmt.Printf("GetQuote Response Body: %s\n", string(*contents))
 	}
 
-	var dctResponse DCTResponse
+	var dctResponse models.DCTResponse
 	if err := xml.Unmarshal(*contents, &dctResponse); err != nil {
 		return nil, err
 	}
@@ -108,10 +110,10 @@ func (c *dhlClient) GetQuote(from *DCTFrom, to *DCTTo, details *BkgDetailsReques
 	return &dctResponse, nil
 }
 
-func (c *dhlClient) buildQuoteRequest(from *DCTFrom, to *DCTTo, details *BkgDetailsRequest, dutiable *DCTDutiable) *DCTRequest {
-	sh := NewServiceHeader(c.siteID, c.password)
-	q := GetQuote{
-		Request: &Request{
+func (c *dhlExpressClient) buildQuoteRequest(from *models.DCTFrom, to *models.DCTTo, details *models.BkgDetailsRequest, dutiable *models.DCTDutiable) *models.DCTRequest {
+	sh := models.NewServiceHeader(c.siteID, c.password)
+	q := models.GetQuote{
+		Request: &models.Request{
 			ServiceHeader: &sh,
 		},
 		From:       from,
@@ -119,7 +121,7 @@ func (c *dhlClient) buildQuoteRequest(from *DCTFrom, to *DCTTo, details *BkgDeta
 		BkgDetails: details,
 		Dutiable:   dutiable,
 	}
-	return &DCTRequest{
+	return &models.DCTRequest{
 		XPNameSpace:     "http://www.dhl.com",
 		XP1NameSpace:    "http://www.dhl.com/datatypes",
 		XP2NameSpace:    "http://www.dhl.com/DCTRequestdatatypes",
@@ -131,7 +133,7 @@ func (c *dhlClient) buildQuoteRequest(from *DCTFrom, to *DCTTo, details *BkgDeta
 
 // GetCapability takes DCTFrom, DCTTo, BkgDetailsRequest and DCTDutiable and makes DCTRequest with GetQuote.
 // Returns a DCTResponse with GetCapabilityResponse
-func (c *dhlClient) GetCapability(from *DCTFrom, to *DCTTo, details *BkgDetailsRequest, dutiable *DCTDutiable) (*DCTResponse, error) {
+func (c *dhlExpressClient) GetCapability(from *models.DCTFrom, to *models.DCTTo, details *models.BkgDetailsRequest, dutiable *models.DCTDutiable) (*models.DCTResponse, error) {
 	data := c.buildCapabilityRequest(from, to, details, dutiable)
 	contents, err := c.fetch(data)
 	if err != nil {
@@ -142,7 +144,7 @@ func (c *dhlClient) GetCapability(from *DCTFrom, to *DCTTo, details *BkgDetailsR
 		fmt.Printf("GetCapability Response Body: %s\n", string(*contents))
 	}
 
-	var dctResponse DCTResponse
+	var dctResponse models.DCTResponse
 	if err := xml.Unmarshal(*contents, &dctResponse); err != nil {
 		return nil, err
 	}
@@ -150,10 +152,10 @@ func (c *dhlClient) GetCapability(from *DCTFrom, to *DCTTo, details *BkgDetailsR
 	return &dctResponse, nil
 }
 
-func (c *dhlClient) buildCapabilityRequest(from *DCTFrom, to *DCTTo, details *BkgDetailsRequest, dutiable *DCTDutiable) *DCTRequest {
-	sh := NewServiceHeader(c.siteID, c.password)
-	q := GetCapability{
-		Request: &Request{
+func (c *dhlExpressClient) buildCapabilityRequest(from *models.DCTFrom, to *models.DCTTo, details *models.BkgDetailsRequest, dutiable *models.DCTDutiable) *models.DCTRequest {
+	sh := models.NewServiceHeader(c.siteID, c.password)
+	q := models.GetCapability{
+		Request: &models.Request{
 			ServiceHeader: &sh,
 		},
 		From:       from,
@@ -161,7 +163,7 @@ func (c *dhlClient) buildCapabilityRequest(from *DCTFrom, to *DCTTo, details *Bk
 		BkgDetails: details,
 		Dutiable:   dutiable,
 	}
-	return &DCTRequest{
+	return &models.DCTRequest{
 		XPNameSpace:     "http://www.dhl.com",
 		XP1NameSpace:    "http://www.dhl.com/datatypes",
 		XP2NameSpace:    "http://www.dhl.com/DCTRequestdatatypes",
@@ -175,7 +177,7 @@ func (c *dhlClient) buildCapabilityRequest(from *DCTFrom, to *DCTTo, details *Bk
 //
 // AWBNumbers, LPNumbers, LevelOfDetails and PiecesEnabled are KnownTrackingRequest specific
 // AccountNumber, ShipmentDate and ShipperReference are UnknownTrackingRequest specific
-func (c *dhlClient) Tracking(query TrackingQuery) (*TrackingResponse, error) {
+func (c *dhlExpressClient) Tracking(query TrackingQuery) (*models.TrackingResponse, error) {
 	var data interface{}
 
 	if len(query.LPNumbers) != 0 || len(query.AWBNumbers) != 0 {
@@ -201,7 +203,7 @@ func (c *dhlClient) Tracking(query TrackingQuery) (*TrackingResponse, error) {
 		fmt.Printf("Tracking Response Body: %s\n", string(*contents))
 	}
 
-	var trackingResponse TrackingResponse
+	var trackingResponse models.TrackingResponse
 	if err := xml.Unmarshal(*contents, &trackingResponse); err != nil {
 		return nil, err
 	}
@@ -209,13 +211,13 @@ func (c *dhlClient) Tracking(query TrackingQuery) (*TrackingResponse, error) {
 	return &trackingResponse, nil
 }
 
-func (c *dhlClient) buildKnownTrackingRequest(query TrackingQuery) *KnownTrackingRequest {
-	sh := NewServiceHeader(c.siteID, c.password)
-	return &KnownTrackingRequest{
+func (c *dhlExpressClient) buildKnownTrackingRequest(query TrackingQuery) *models.KnownTrackingRequest {
+	sh := models.NewServiceHeader(c.siteID, c.password)
+	return &models.KnownTrackingRequest{
 		XReqNameSpace:   "http://www.dhl.com",
 		XXSINameSpace:   "http://www.w3.org/2001/XMLSchema-instance",
 		XSchemaLocation: "http://www.dhl.com TrackingRequestKnown.xsd",
-		Request: &Request{
+		Request: &models.Request{
 			ServiceHeader: &sh,
 		},
 		LanguageCode:   query.LanguageCode,
@@ -227,13 +229,13 @@ func (c *dhlClient) buildKnownTrackingRequest(query TrackingQuery) *KnownTrackin
 	}
 }
 
-func (c *dhlClient) buildUnknownTrackingRequest(query TrackingQuery) *UnknownTrackingRequest {
-	sh := NewServiceHeader(c.siteID, c.password)
-	return &UnknownTrackingRequest{
+func (c *dhlExpressClient) buildUnknownTrackingRequest(query TrackingQuery) *models.UnknownTrackingRequest {
+	sh := models.NewServiceHeader(c.siteID, c.password)
+	return &models.UnknownTrackingRequest{
 		XReqNameSpace:   "http://www.dhl.com",
 		XXSINameSpace:   "http://www.w3.org/2001/XMLSchema-instance",
 		XSchemaLocation: "http://www.dhl.com TrackingRequestKnown.xsd",
-		Request: &Request{
+		Request: &models.Request{
 			ServiceHeader: &sh,
 		},
 		LanguageCode:     query.LanguageCode,
@@ -243,7 +245,7 @@ func (c *dhlClient) buildUnknownTrackingRequest(query TrackingQuery) *UnknownTra
 	}
 }
 
-func (c *dhlClient) Routing(query RouteQuery) (*RouteResponse, error) {
+func (c *dhlExpressClient) Routing(query RouteQuery) (*models.RouteResponse, error) {
 	data := c.buildRoutingRequest(query)
 	contents, err := c.fetch(data)
 	if err != nil {
@@ -254,7 +256,7 @@ func (c *dhlClient) Routing(query RouteQuery) (*RouteResponse, error) {
 		fmt.Printf("Routing Response Body: %s\n", string(*contents))
 	}
 
-	var routeResponse RouteResponse
+	var routeResponse models.RouteResponse
 	if err := xml.Unmarshal(*contents, &routeResponse); err != nil {
 		return nil, err
 	}
@@ -262,14 +264,14 @@ func (c *dhlClient) Routing(query RouteQuery) (*RouteResponse, error) {
 	return &routeResponse, nil
 }
 
-func (c *dhlClient) buildRoutingRequest(query RouteQuery) *RouteRequest {
-	sh := NewServiceHeader(c.siteID, c.password)
-	return &RouteRequest{
+func (c *dhlExpressClient) buildRoutingRequest(query RouteQuery) *models.RouteRequest {
+	sh := models.NewServiceHeader(c.siteID, c.password)
+	return &models.RouteRequest{
 		XNS1NameSpace:   "http://www.dhl.com",
 		XXSINameSpace:   "http://www.w3.org/2001/XMLSchema-instance",
 		XSchemaLocation: "http://www.dhl.com routing-req.xsd",
 		SchemaVersion:   1.0,
-		Request: &Request{
+		Request: &models.Request{
 			ServiceHeader: &sh,
 		},
 		RegionCode:        query.RegionCode,
@@ -286,7 +288,7 @@ func (c *dhlClient) buildRoutingRequest(query RouteQuery) *RouteRequest {
 	}
 }
 
-func (c *dhlClient) fetch(data interface{}) (*[]byte, error) {
+func (c *dhlExpressClient) fetch(data interface{}) (*[]byte, error) {
 	xmlstring, err := xml.MarshalIndent(data, "", "    ")
 	if err != nil {
 		return nil, err

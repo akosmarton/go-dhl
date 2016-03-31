@@ -1,4 +1,4 @@
-package dhl
+package models
 
 var (
 	xmlDateFormat     = "2006-01-02"

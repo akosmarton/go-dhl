@@ -1,4 +1,4 @@
-package dhl
+package models
 
 // KnownTrackingRequest request object
 type KnownTrackingRequest struct {

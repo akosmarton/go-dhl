@@ -1,4 +1,4 @@
-package dhl
+package models
 
 import (
 	"math"

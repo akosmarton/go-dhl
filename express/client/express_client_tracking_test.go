@@ -1,8 +1,10 @@
-package dhl
+package client_test
 
 import (
 	"testing"
 
+	"github.com/shipwallet/go-dhl/express/client"
+	"github.com/shipwallet/go-dhl/express/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
@@ -16,16 +18,16 @@ func (suite *TrackingTestSuite) SetupTest() {
 }
 
 func (suite *TrackingTestSuite) TestValidKnownTrackingRequest() {
-	config := ClientConfig{Host: "staging"}
-	client, _ := NewDHLClient("DServiceVal", "testServVal", config)
+	config := client.ClientConfig{Host: "staging"}
+	c, _ := client.NewDHLExpressClient("DServiceVal", "testServVal", config)
 
-	query := TrackingQuery{
+	query := client.TrackingQuery{
 		LanguageCode:   "SV",
-		AWBNumbers:     []AWBNumber{"123456789"},
+		AWBNumbers:     []models.AWBNumber{"123456789"},
 		LevelOfDetails: "ALL_CHECK_POINTS",
 	}
 
-	resp, err := client.Tracking(query)
+	resp, err := c.Tracking(query)
 
 	assert.Nil(suite.T(), err)
 	assert.NotNil(suite.T(), resp.Response)
@@ -33,23 +35,23 @@ func (suite *TrackingTestSuite) TestValidKnownTrackingRequest() {
 }
 
 func (suite *TrackingTestSuite) TestValidUnknownTrackingRequest() {
-	config := ClientConfig{Host: "staging"}
-	client, _ := NewDHLClient("DServiceVal", "testServVal", config)
+	config := client.ClientConfig{Host: "staging"}
+	c, _ := client.NewDHLExpressClient("DServiceVal", "testServVal", config)
 
-	query := TrackingQuery{
+	query := client.TrackingQuery{
 		LanguageCode:  "en",
 		AccountNumber: 630276297,
-		ShipperReference: &Reference{
+		ShipperReference: &models.Reference{
 			ReferenceID:   "8100048270",
 			ReferenceType: "St",
 		},
-		ShipmentDate: &ShipmentDate{
+		ShipmentDate: &models.ShipmentDate{
 			ShipmentDateFrom: "2010-07-15",
 			ShipmentDateTo:   "2010-07-20",
 		},
 	}
 
-	resp, err := client.Tracking(query)
+	resp, err := c.Tracking(query)
 
 	assert.Nil(suite.T(), err)
 	assert.NotNil(suite.T(), resp.Response)

@@ -1,4 +1,4 @@
-package dhl
+package models
 
 type RouteResponse struct {
 	Response             *Response
