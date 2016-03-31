@@ -16,8 +16,10 @@ var hosts = map[string]string{
 	"production": "http://164.9.104.199",
 }
 
+// TimeTableClient interface
 type TimeTableClient interface {
 	GetTimeTable(TimeTableQuery) (*models.GetTimeTableResponse, error)
+	//GettimeTableAndPriceTD not implemented
 }
 
 // ClientConfig object used to configure dhlExpressClient
@@ -26,6 +28,7 @@ type ClientConfig struct {
 	Host  string
 }
 
+// NewTimeTableClient used for creating a new TimeTableClient instance
 func NewTimeTableClient(username string, password string, config ClientConfig) (TimeTableClient, error) {
 
 	if username == "" {
@@ -55,42 +58,6 @@ type dhlTimeTableClient struct {
 	httpClient *http.Client
 	username   string
 	password   string
-}
-
-type TimeTableQuery struct {
-	OriginCountryCode      string
-	OriginPostCode         string
-	OriginPlace            string
-	DestinationCountryCode string
-	DestinationPostCode    string
-	DestinationPlace       string
-	Date                   string
-	EarliestSent           bool
-	HolidayCheck           bool
-}
-
-func (q *TimeTableQuery) Validate() error {
-	if q.OriginCountryCode == "" {
-		return errors.New("OriginCountryCode is required")
-	}
-
-	if q.OriginPostCode == "" {
-		return errors.New("OriginPostCode is required")
-	}
-
-	if q.DestinationCountryCode == "" {
-		return errors.New("DestinationCountryCode is required")
-	}
-
-	if q.DestinationPostCode == "" {
-		return errors.New("DestinationPostCode is required")
-	}
-
-	if q.Date == "" {
-		return errors.New("Date is required")
-	}
-
-	return nil
 }
 
 func (c *dhlTimeTableClient) GetTimeTable(query TimeTableQuery) (*models.GetTimeTableResponse, error) {
