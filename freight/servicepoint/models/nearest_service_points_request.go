@@ -18,14 +18,3 @@ type FeatureCodes struct {
 type BitCatCodes struct {
 	BitCatCode []string `xml:"http://DHL.ServicePoint.DataContracts/2008/10 BitCatCode,omitempty"`
 }
-
-type SoapRequestEnvelope struct {
-	XMLName       string `xml:"http://schemas.xmlsoap.org/soap/envelope/ Envelope"`
-	SOAPNameSpace string `xml:"xmlns:soap,attr"`
-	Body          *SoapRequestBody
-}
-
-type SoapRequestBody struct {
-	XMLName string `xml:"http://schemas.xmlsoap.org/soap/envelope/ Body"`
-	Request *GetNearestServicePointsRequest
-}

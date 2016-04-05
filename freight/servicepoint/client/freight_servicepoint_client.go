@@ -19,7 +19,7 @@ var hosts = map[string]string{
 // ServicePointClient interface
 type ServicePointClient interface {
 	GetNearestServicePoints(NearestServicePointsQuery) (*models.GetNearestServicePointsResponse, error)
-	GetServicePointDetail()
+	GetServicePointDetail(ServicePointDetailQuery) (*models.GetServicePointDetailResponse, error)
 }
 
 // ClientConfig object used to configure dhlExpressClient
@@ -55,7 +55,7 @@ func (c *dhlServicePointClient) GetNearestServicePoints(query NearestServicePoin
 	}
 
 	data := c.buildGetNearestServicePointsRequest(query)
-	contents, err := c.fetch(data)
+	contents, err := c.fetch("GetNearestServicePoints", data)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +64,7 @@ func (c *dhlServicePointClient) GetNearestServicePoints(query NearestServicePoin
 		fmt.Printf("GetNearestServicePoints Response Body: %s\n", string(*contents))
 	}
 
-	var response models.SoapResponseEvelope
+	var response models.SoapResponseEnvelopeNearestServicePoints
 
 	if err := xml.Unmarshal(*contents, &response); err != nil {
 		return nil, err
@@ -101,11 +101,51 @@ func (c *dhlServicePointClient) buildGetNearestServicePointsRequest(q NearestSer
 	}
 }
 
-func (c *dhlServicePointClient) GetServicePointDetail() {
+func (c *dhlServicePointClient) GetServicePointDetail(query ServicePointDetailQuery) (*models.GetServicePointDetailResponse, error) {
+	if err := query.Validate(); err != nil {
+		return nil, err
+	}
 
+	data := c.buildGetServicePointDetailRequest(query)
+	contents, err := c.fetch("GetServicePointDetail", data)
+	if err != nil {
+		return nil, err
+	}
+
+	if c.debug {
+		fmt.Printf("GetServicePointDetail Response Body: %s\n", string(*contents))
+	}
+
+	var response models.SoapResponseEnvelopeServicePointDetail
+
+	if err := xml.Unmarshal(*contents, &response); err != nil {
+		return nil, err
+	}
+
+	if response.Body.Fault != nil {
+		return nil, errors.New(response.Body.Fault.FaultString)
+	}
+
+	return response.Body.Response, nil
 }
 
-func (c *dhlServicePointClient) fetch(data interface{}) (*[]byte, error) {
+func (c *dhlServicePointClient) buildGetServicePointDetailRequest(q ServicePointDetailQuery) *models.SoapRequestEnvelope {
+	servicepoint := models.GetServicePointDetailRequest{
+		ServicePointRef: &models.ServicePointRef{
+			ID:          q.ID,
+			DisplayName: q.DisplayName,
+		},
+	}
+
+	return &models.SoapRequestEnvelope{
+		SOAPNameSpace: "http://schemas.xmlsoap.org/soap/envelope/",
+		Body: &models.SoapRequestBody{
+			Request: &servicepoint,
+		},
+	}
+}
+
+func (c *dhlServicePointClient) fetch(action string, data interface{}) (*[]byte, error) {
 	xmlstring, err := xml.MarshalIndent(data, "", "    ")
 	if err != nil {
 		return nil, err
@@ -123,7 +163,7 @@ func (c *dhlServicePointClient) fetch(data interface{}) (*[]byte, error) {
 		return nil, err
 	}
 
-	req.Header.Set("SOAPAction", "GetNearestServicePoints")
+	req.Header.Set("SOAPAction", action)
 	req.Header.Set("Content-Type", "text/xml; charset=utf-8")
 	res, err := c.httpClient.Do(req)
 	if err != nil {
