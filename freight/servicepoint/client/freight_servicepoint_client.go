@@ -70,8 +70,6 @@ func (c *dhlServicePointClient) GetNearestServicePoints(query NearestServicePoin
 		return nil, err
 	}
 
-	fmt.Printf("%+v\n", response)
-
 	if response.Body.Fault != nil {
 		return nil, errors.New(response.Body.Fault.FaultString)
 	}

@@ -1,12 +1,12 @@
 package models
 
 type GetNearestServicePointsResponse struct {
-	XMLName       string         `xml:"http://DHL.ServicePoint.ServiceContracts/2008/10 GetNearestServicePointsResponse"`
-	ServicePoints *ServicePoints `xml:"http://DHL.ServicePoint.DataContracts/2008/10 ServicePoints"`
+	XMLName       string `xml:"http://DHL.ServicePoint.ServiceContracts/2008/10 GetNearestServicePointsResponse"`
+	ServicePoints *ServicePoints
 }
 
 type ServicePoints struct {
-	XMLName            string               `xml:"http://DHL.ServicePoint.DataContracts/2008/10 ServicePoints"`
+	XMLName            string               `xml:"ServicePoints"`
 	NearbyServicePoint []NearbyServicePoint `xml:"http://DHL.ServicePoint.DataContracts/2008/10 NearbyServicePoint"`
 }
 
@@ -27,9 +27,8 @@ type ServicePointRef struct {
 }
 
 type SoapResponseEvelope struct {
-	XMLName       string `xml:"http://schemas.xmlsoap.org/soap/envelope/ Envelope"`
-	SOAPNameSpace string `xml:"xmlns:s,attr"`
-	Body          *SoapResponseBody
+	XMLName string `xml:"http://schemas.xmlsoap.org/soap/envelope/ Envelope"`
+	Body    *SoapResponseBody
 }
 
 type SoapResponseBody struct {
