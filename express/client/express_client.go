@@ -26,8 +26,9 @@ type Client interface {
 
 // ClientConfig object used to configure dhlExpressClient
 type ClientConfig struct {
-	Debug bool
-	Host  string
+	Debug      bool
+	Host       string
+	HttpClient *http.Client
 }
 
 // TrackingQuery contains parameters to be used for making a Known or Unknown Tracking request
@@ -72,9 +73,14 @@ func NewDHLExpressClient(siteID string, password string, config ClientConfig) (C
 		host = config.Host
 	}
 
+	client := &http.Client{}
+	if config.HttpClient != nil {
+		client = config.HttpClient
+	}
+
 	return &dhlExpressClient{
 		baseURL:    hosts[host],
-		httpClient: &http.Client{},
+		httpClient: client,
 		debug:      config.Debug,
 		siteID:     siteID,
 		password:   password,

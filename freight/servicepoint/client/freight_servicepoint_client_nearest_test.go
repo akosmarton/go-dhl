@@ -24,7 +24,7 @@ func (suite *GetNearestServicePointsTestSuite) TestGetNearestServicePointsWorks(
 	query.CountryCode = "SE"
 	query.Street = "Mälarvarvsbacken 8"
 	query.PostCode = "11733"
-	query.MaxNumberOfItems = 2
+	query.MaxNumberOfItems = 1
 
 	resp, err := client.GetNearestServicePoints(query)
 

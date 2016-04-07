@@ -24,8 +24,9 @@ type TimeTableClient interface {
 
 // ClientConfig object used to configure dhlExpressClient
 type ClientConfig struct {
-	Debug bool
-	Host  string
+	Debug      bool
+	Host       string
+	HttpClient *http.Client
 }
 
 // NewTimeTableClient used for creating a new TimeTableClient instance
@@ -43,10 +44,15 @@ func NewTimeTableClient(username string, password string, config ClientConfig) (
 		host = config.Host
 	}
 
+	client := &http.Client{}
+	if config.HttpClient != nil {
+		client = config.HttpClient
+	}
+
 	return &dhlTimeTableClient{
 		baseURL:    hosts[host],
 		debug:      config.Debug,
-		httpClient: &http.Client{},
+		httpClient: client,
 		username:   username,
 		password:   password,
 	}, nil

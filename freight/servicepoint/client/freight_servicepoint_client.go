@@ -24,8 +24,9 @@ type ServicePointClient interface {
 
 // ClientConfig object used to configure dhlExpressClient
 type ClientConfig struct {
-	Debug bool
-	Host  string
+	Debug      bool
+	Host       string
+	HttpClient *http.Client
 }
 
 // NewServicePointClient used for creating a new TimeTableClient instance
@@ -36,10 +37,15 @@ func NewServicePointClient(config ClientConfig) (ServicePointClient, error) {
 		host = config.Host
 	}
 
+	client := &http.Client{}
+	if config.HttpClient != nil {
+		client = config.HttpClient
+	}
+
 	return &dhlServicePointClient{
 		baseURL:    hosts[host],
 		debug:      config.Debug,
-		httpClient: &http.Client{},
+		httpClient: client,
 	}, nil
 }
 
