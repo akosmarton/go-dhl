@@ -13,7 +13,7 @@ import (
 
 var hosts = map[string]string{
 	"staging":    "https://www.dhltoolboxtest.se",
-	"production": "http://164.9.104.199",
+	"production": "https://www.dhltoolbox.se",
 }
 
 // ServicePointClient interface
