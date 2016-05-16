@@ -153,7 +153,10 @@ func (c *dhlTimeTableClient) fetch(data interface{}) (*[]byte, error) {
 	url := fmt.Sprintf("%s/%s", c.baseURL, "DHLTimeTableWS/TimeTable.asmx")
 	body := bytes.NewBuffer([]byte(xmlstring))
 
+	action := "http://dhltimetable.dhl.com/GetTimeTable"
 	if c.debug {
+		fmt.Printf("API header, SOAPAction: %s\n", action)
+		fmt.Printf("API Request URL: %s\n", url)
 		fmt.Printf("API Request Body: %s\n", body)
 	}
 
@@ -162,7 +165,7 @@ func (c *dhlTimeTableClient) fetch(data interface{}) (*[]byte, error) {
 		return nil, err
 	}
 
-	req.Header.Set("SOAPAction", "http://dhltimetable.dhl.com/GetTimeTable")
+	req.Header.Set("SOAPAction", action)
 	req.Header.Set("Content-Type", "text/xml; charset=utf-8")
 	res, err := c.httpClient.Do(req)
 	if err != nil {

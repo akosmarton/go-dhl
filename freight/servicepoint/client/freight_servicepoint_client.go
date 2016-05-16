@@ -161,6 +161,8 @@ func (c *dhlServicePointClient) fetch(action string, data interface{}) (*[]byte,
 	body := bytes.NewBuffer([]byte(xmlstring))
 
 	if c.debug {
+		fmt.Printf("API header, SOAPAction: %s\n", action)
+		fmt.Printf("API Request URL: %s\n", url)
 		fmt.Printf("API Request Body: %s\n", body)
 	}
 
