@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"regexp"
 
 	"github.com/shipwallet/go-dhl/freight/timetable/models"
 )
@@ -66,6 +67,20 @@ type dhlTimeTableClient struct {
 	password   string
 }
 
+var (
+	dhlErrIDPattern  = regexp.MustCompile(`<DHLErrID>(.*)</DHLErrID>`)
+	dhlErrMsgPattern = regexp.MustCompile(`<DHLErrMessage>(.*)</DHLErrMessage>`)
+)
+
+type DHLError struct {
+	DHLErrID      string
+	DHLErrMessage string
+}
+
+func (d DHLError) Error() string {
+	return fmt.Sprintf("DHLError id=%s msg=%s", d.DHLErrID, d.DHLErrMessage)
+}
+
 func (c *dhlTimeTableClient) GetTimeTable(query TimeTableQuery) (*models.GetTimeTableResponse, error) {
 	if err := query.Validate(); err != nil {
 		return nil, err
@@ -88,6 +103,14 @@ func (c *dhlTimeTableClient) GetTimeTable(query TimeTableQuery) (*models.GetTime
 	}
 
 	if response.Body.Fault != nil {
+		dhlErrID := dhlErrIDPattern.FindAllStringSubmatch(response.Body.Fault.FaultString, -1)
+		dhlErrMsg := dhlErrMsgPattern.FindAllStringSubmatch(response.Body.Fault.FaultString, -1)
+
+		if len(dhlErrID) == 1 && len(dhlErrID[0]) == 2 && len(dhlErrMsg) == 1 && len(dhlErrMsg[0]) == 2 {
+			dhlError := DHLError{dhlErrID[0][1], dhlErrMsg[0][1]}
+			return nil, dhlError
+		}
+
 		return nil, errors.New(response.Body.Fault.FaultString)
 	}
 
