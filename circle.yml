@@ -1,0 +1,8 @@
+test:
+  override:
+    - |
+      export GOPATH=$HOME/go
+      mkdir -p $GOPATH/src/github.com/shipwallet
+      mv $HOME/go-dhl $GOPATH/src/github.com/shipwallet
+      cd $GOPATH/src/github.com/shipwallet/go-dhl
+      go test -v $(go list ./... | grep -v /vendor/)
