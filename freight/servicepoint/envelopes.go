@@ -1,4 +1,4 @@
-package models
+package servicepoint
 
 type SoapRequestEnvelope struct {
 	XMLName       string `xml:"http://schemas.xmlsoap.org/soap/envelope/ Envelope"`

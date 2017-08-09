@@ -1,9 +1,8 @@
-package client_test
+package servicepoint
 
 import (
 	"testing"
 
-	servicepoint "github.com/shipwallet/go-dhl/freight/servicepoint/client"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
@@ -17,10 +16,10 @@ func (suite *GetServicePointDetailTestSuite) SetupTest() {
 }
 
 func (suite *GetServicePointDetailTestSuite) TestGetServicePointDetailWorks() {
-	config := servicepoint.ClientConfig{Host: "staging"}
-	client, _ := servicepoint.NewServicePointClient(config)
+	config := ClientConfig{Host: "staging"}
+	client, _ := NewClient(config)
 
-	query := servicepoint.ServicePointDetailQuery{}
+	query := ServicePointDetailQuery{}
 	query.ID = "SE-648600"
 
 	resp, err := client.GetServicePointDetail(query)
@@ -32,10 +31,10 @@ func (suite *GetServicePointDetailTestSuite) TestGetServicePointDetailWorks() {
 }
 
 func (suite *GetServicePointDetailTestSuite) TestGetServicePointDetailServiceAddressAddress() {
-	config := servicepoint.ClientConfig{Host: "staging"}
-	client, _ := servicepoint.NewServicePointClient(config)
+	config := ClientConfig{Host: "staging"}
+	client, _ := NewClient(config)
 
-	query := servicepoint.ServicePointDetailQuery{}
+	query := ServicePointDetailQuery{}
 	query.ID = "SE-648600"
 
 	resp, err := client.GetServicePointDetail(query)
@@ -53,10 +52,10 @@ func (suite *GetServicePointDetailTestSuite) TestGetServicePointDetailServiceAdd
 }
 
 func (suite *GetServicePointDetailTestSuite) TestGetServicePointDetailServiceAddressTelecom() {
-	config := servicepoint.ClientConfig{Host: "staging"}
-	client, _ := servicepoint.NewServicePointClient(config)
+	config := ClientConfig{Host: "staging"}
+	client, _ := NewClient(config)
 
-	query := servicepoint.ServicePointDetailQuery{}
+	query := ServicePointDetailQuery{}
 	query.ID = "SE-648600"
 
 	resp, err := client.GetServicePointDetail(query)
@@ -71,10 +70,10 @@ func (suite *GetServicePointDetailTestSuite) TestGetServicePointDetailServiceAdd
 }
 
 func (suite *GetServicePointDetailTestSuite) TestGetServicePointDetailInvalidServicePointID() {
-	config := servicepoint.ClientConfig{Host: "staging"}
-	client, _ := servicepoint.NewServicePointClient(config)
+	config := ClientConfig{Host: "staging"}
+	client, _ := NewClient(config)
 
-	query := servicepoint.ServicePointDetailQuery{}
+	query := ServicePointDetailQuery{}
 	query.ID = "SE-2930192"
 
 	resp, err := client.GetServicePointDetail(query)

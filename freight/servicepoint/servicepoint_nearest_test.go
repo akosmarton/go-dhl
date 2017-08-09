@@ -1,9 +1,8 @@
-package client_test
+package servicepoint
 
 import (
 	"testing"
 
-	servicepoint "github.com/shipwallet/go-dhl/freight/servicepoint/client"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
@@ -17,10 +16,10 @@ func (suite *GetNearestServicePointsTestSuite) SetupTest() {
 }
 
 func (suite *GetNearestServicePointsTestSuite) TestGetNearestServicePointsWorks() {
-	config := servicepoint.ClientConfig{Host: "staging"}
-	client, _ := servicepoint.NewServicePointClient(config)
+	config := ClientConfig{Host: "staging"}
+	client, _ := NewClient(config)
 
-	query := servicepoint.NearestServicePointsQuery{}
+	query := NearestServicePointsQuery{}
 	query.CountryCode = "SE"
 	query.Street = "Mälarvarvsbacken 8"
 	query.PostCode = "11733"
@@ -35,10 +34,10 @@ func (suite *GetNearestServicePointsTestSuite) TestGetNearestServicePointsWorks(
 }
 
 func (suite *GetNearestServicePointsTestSuite) TestGetNearestServicePointsHaveNearbyServicePoint() {
-	config := servicepoint.ClientConfig{Host: "staging"}
-	client, _ := servicepoint.NewServicePointClient(config)
+	config := ClientConfig{Host: "staging"}
+	client, _ := NewClient(config)
 
-	query := servicepoint.NearestServicePointsQuery{}
+	query := NearestServicePointsQuery{}
 	query.CountryCode = "SE"
 	query.Street = "Mälarvarvsbacken 8"
 	query.PostCode = "11733"
@@ -51,8 +50,8 @@ func (suite *GetNearestServicePointsTestSuite) TestGetNearestServicePointsHaveNe
 
 	point := resp.ServicePoints.NearbyServicePoint[0]
 	//Identity
-	assert.Equal(suite.T(), "HANDLARN BERGSUNDSTRAND", point.Identity.DisplayName)
-	assert.Equal(suite.T(), "SE-648600", point.Identity.ID)
+	assert.Equal(suite.T(), "HANDLAR´N BERGSUNDS LIVS", point.Identity.DisplayName)
+	assert.Equal(suite.T(), "SE-968300", point.Identity.ID)
 
 	// Address
 	assert.NotNil(suite.T(), point.Distance)
@@ -66,10 +65,10 @@ func (suite *GetNearestServicePointsTestSuite) TestGetNearestServicePointsHaveNe
 }
 
 func (suite *GetNearestServicePointsTestSuite) TestGetNearestServicePointsErrorResponseReturnedAsErrors() {
-	config := servicepoint.ClientConfig{Host: "staging"}
-	client, _ := servicepoint.NewServicePointClient(config)
+	config := ClientConfig{Host: "staging"}
+	client, _ := NewClient(config)
 
-	query := servicepoint.NearestServicePointsQuery{}
+	query := NearestServicePointsQuery{}
 	query.CountryCode = "SE"
 	query.Street = "Mälarvarvsbacken 8"
 	query.PostCode = "1113f"

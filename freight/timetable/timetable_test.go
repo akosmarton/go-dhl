@@ -1,10 +1,9 @@
-package client_test
+package timetable
 
 import (
 	"testing"
 	"time"
 
-	timetable "github.com/shipwallet/go-dhl/freight/timetable/client"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
@@ -18,11 +17,11 @@ func (suite *GetTimeTableTestSuite) SetupTest() {
 }
 
 func (suite *GetTimeTableTestSuite) TestGetTimeTableSEtoSE() {
-	config := timetable.ClientConfig{Host: "staging"}
-	client, _ := timetable.NewTimeTableClient("TimeTableAppUser", "TTA%Pwd06", config)
+	config := Config{Host: "staging"}
+	client, _ := NewClient("TimeTableAppUser", "TTA%Pwd06", config)
 
 	t := time.Now()
-	query := timetable.TimeTableQuery{}
+	query := TimeTableQuery{}
 	query.OriginCountryCode = "SE"
 	query.OriginPostCode = "14250"
 	query.DestinationCountryCode = "SE"
@@ -48,11 +47,11 @@ func (suite *GetTimeTableTestSuite) TestGetTimeTableSEtoSE() {
 }
 
 func (suite *GetTimeTableTestSuite) TestGetTimeTableSEtoSEInvalidPostCode() {
-	config := timetable.ClientConfig{Host: "staging"}
-	client, _ := timetable.NewTimeTableClient("TimeTableAppUser", "TTA%Pwd06", config)
+	config := Config{Host: "staging"}
+	client, _ := NewClient("TimeTableAppUser", "TTA%Pwd06", config)
 
 	t := time.Now()
-	query := timetable.TimeTableQuery{}
+	query := TimeTableQuery{}
 	query.OriginCountryCode = "SE"
 	query.OriginPostCode = "0175"
 	query.DestinationCountryCode = "SE"
@@ -65,7 +64,7 @@ func (suite *GetTimeTableTestSuite) TestGetTimeTableSEtoSEInvalidPostCode() {
 	assert.NotNil(suite.T(), err)
 	assert.Nil(suite.T(), resp)
 
-	assert.Equal(suite.T(), err.Error(), "Server was unable to process request. ---> <DHLErrID>9005</DHLErrID><DHLErrMessage>Pickup post code must be 5 digits.</DHLErrMessage>")
+	assert.Equal(suite.T(), err.Error(), "DHLError id=9005 msg=Pickup post code must be 5 digits.")
 }
 
 func TestGetTimeTableTestSuite(t *testing.T) {
