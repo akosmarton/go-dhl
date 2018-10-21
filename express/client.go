@@ -7,8 +7,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-
-	log "github.com/sirupsen/logrus"
 )
 
 var hosts = map[string]string{
@@ -71,7 +69,6 @@ func (c *dhlExpressClient) fetch(data interface{}) (*[]byte, error) {
 	}
 
 	body := bytes.NewBuffer([]byte(xmlstring))
-	log.Debugf("API Request Body: %s\n", body)
 
 	url := fmt.Sprintf("http://%s/%s", c.baseURL, "XMLShippingServlet")
 	resp, err := c.httpClient.Post(url, "text/xml", body)

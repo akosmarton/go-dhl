@@ -2,8 +2,6 @@ package express
 
 import (
 	"encoding/xml"
-
-	log "github.com/sirupsen/logrus"
 )
 
 // RouteRequest object
@@ -67,7 +65,6 @@ func (c *dhlExpressClient) Routing(query RouteQuery) (*RouteResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Debugf("Routing Response Body: %s\n", string(*contents))
 
 	var routeResponse RouteResponse
 	if err := xml.Unmarshal(*contents, &routeResponse); err != nil {

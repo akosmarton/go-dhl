@@ -2,8 +2,6 @@ package express
 
 import (
 	"encoding/xml"
-
-	log "github.com/sirupsen/logrus"
 )
 
 // GetCapability takes DCTFrom, DCTTo, BkgDetailsRequest and DCTDutiable and makes DCTRequest with GetQuote.
@@ -14,7 +12,6 @@ func (c *dhlExpressClient) GetCapability(from *DCTFrom, to *DCTTo, details *BkgD
 	if err != nil {
 		return nil, err
 	}
-	log.Debugf("GetCapability Response Body: %s\n", string(*contents))
 
 	var dctResponse DCTResponse
 	if err := xml.Unmarshal(*contents, &dctResponse); err != nil {

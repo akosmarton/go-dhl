@@ -3,8 +3,6 @@ package express
 import (
 	"encoding/xml"
 	"errors"
-
-	log "github.com/sirupsen/logrus"
 )
 
 // KnownTrackingRequest request object
@@ -258,12 +256,10 @@ func (c *dhlExpressClient) determineRequestType(query TrackingQuery) (interface{
 	var data interface{}
 
 	if len(query.LPNumbers) != 0 || len(query.AWBNumbers) != 0 {
-		log.Debugf("Building KnownTrackingRequest")
 		data = c.buildKnownTrackingRequest(query)
 		return data, nil
 	}
 	if query.AccountNumber != 0 {
-		log.Debugf("Building UnknownTrackingRequest")
 		data = c.buildUnknownTrackingRequest(query)
 		return data, nil
 	}
@@ -283,7 +279,6 @@ func (c *dhlExpressClient) Tracking(query TrackingQuery) (*TrackingResponse, err
 	if err != nil {
 		return nil, err
 	}
-	log.Debugf("Tracking Response Body: %s\n", string(*contents))
 
 	var trackingResponse TrackingResponse
 	if err := xml.Unmarshal(*contents, &trackingResponse); err != nil {
