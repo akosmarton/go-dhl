@@ -1,7 +1,6 @@
 package express
 
 import (
-	"math"
 	"math/rand"
 	"strconv"
 	"time"
@@ -30,18 +29,10 @@ type ServiceHeader struct {
 }
 
 func generateMessageReference() string {
-	noDigits := randomInt(28, 33)
 	digits := ""
-
-	for i := 0; i < noDigits; i++ {
-		digit := randomInt(0, 10)
-		digits += strconv.Itoa(digit)
+	for i := 0; i < 28+rand.Intn(4); i++ {
+		digits += strconv.Itoa(rand.Intn(10))
 	}
 
 	return digits
-}
-
-func randomInt(low int, high int) int {
-	d := rand.Float64()*float64((high-low)) + float64(low)
-	return int(math.Floor(d))
 }
