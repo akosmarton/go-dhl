@@ -48,7 +48,7 @@ type Reference struct {
 // ShipmentDate request object
 type ShipmentDate struct {
 	ShipmentDateFrom string `xml:"ShipmentDateFrom,omitempty"`
-	ShipmentDateTo   string `xml:"ShipmentDateFrom,omitempty"`
+	ShipmentDateTo   string `xml:"ShipmentDateTo,omitempty"`
 }
 
 // TrackingResponse object
